@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -18,12 +20,15 @@ import com.analyzer.ms.co2analyzer.model.SensorMetricsResponse;
 
 @Component
 public class SensorMetricServiceImpl implements SensorMetricService {
+	private final Logger LOG = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
 	@Override
 	public SensorMetricsResponse getSensorMetrics(String uuid) {
+		LOG.info("Request received for collectSensor with uuid, {}", uuid);
+
 		List<Criteria> criterias = new ArrayList<>();
 		Query query = new Query();
 		criterias.add(Criteria.where("uuid").is(uuid));

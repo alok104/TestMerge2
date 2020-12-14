@@ -3,6 +3,8 @@ package com.analyzer.ms.co2analyzer.service;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -17,7 +19,8 @@ import com.analyzer.ms.co2analyzer.utility.SensorStatusMeasurementUtil;
 
 @Component
 public class SensorCollectServiceImpl implements SensorCollectService {
-	
+	private final Logger LOG = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private SensorMeasurementRepository measurementRepo;
 	
@@ -26,11 +29,12 @@ public class SensorCollectServiceImpl implements SensorCollectService {
 	
 	@Override
 	public void collectSensor(SensorRequest sensorRequest,String uuid) {
+		LOG.info("Request received for collectSensor with uuid, {}", uuid);
 		validateRequest(sensorRequest,uuid);
-		SensorRequestVO requestVO = mapToSensorVo(sensorRequest,uuid);
 		
-		//Check if sensor measurement entry already there for same UUID, ignore
+		//Check if sensor measurement entry already there for same UUID within last one minute, ignore
 		if(sensorCache.find(uuid) == null) {
+			SensorRequestVO requestVO = mapToSensorVo(sensorRequest,uuid);
 			saveSensor(prepareSensorMeasurementBody(requestVO));
 			addToCache(requestVO);
 		}

@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.Random;
 
 import com.analyzer.ms.co2analyzer.entity.SensorMeasurement;
+import com.analyzer.ms.co2analyzer.enums.SensorStatus;
 import com.analyzer.ms.co2analyzer.model.SensorRequest;
+import com.analyzer.ms.co2analyzer.model.StatusResposeVO;
 import com.analyzer.ms.co2analyzer.utility.SensorStatusMeasurementUtil;
 
 public class SensorDTOFactory {
@@ -31,5 +33,11 @@ public class SensorDTOFactory {
 	
 	public SensorRequest randomRequest() {
 		return new SensorRequest(null, new Date());
+	}
+
+	public StatusResposeVO sensorStatus() {
+		StatusResposeVO resposeVO = new StatusResposeVO();
+		resposeVO.setStatus(SensorStatus.OK.name());
+		return resposeVO;
 	}
 }

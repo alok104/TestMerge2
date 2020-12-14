@@ -20,8 +20,10 @@ public class RedisCacheConfiguration {
 	
 	@Bean(name = "jedisConnectionFactory")
 	public JedisConnectionFactory jedisConnectionFactory() {
-		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(hostname, port);
-		redisStandaloneConfiguration.setPassword(password);
+		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(hostname,port);
+		//For local
+		if(password.length == 0)
+			redisStandaloneConfiguration.setPassword(password);
 		return new JedisConnectionFactory(redisStandaloneConfiguration);
 	}
 
@@ -31,5 +33,6 @@ public class RedisCacheConfiguration {
 		redisTemplate.setConnectionFactory(jedisConnectionFactory());
 		return redisTemplate;
 	}
+
 
 }
