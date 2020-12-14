@@ -1,10 +1,16 @@
 package com.analyzer.ms.co2analyzer.service;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import com.analyzer.ms.co2analyzer.cache.SensorCache;
 import com.analyzer.ms.co2analyzer.entity.SensorMeasurement;
+import com.analyzer.ms.co2analyzer.exception.Co2AnalyzerException;
 import com.analyzer.ms.co2analyzer.model.SensorRequest;
+import com.analyzer.ms.co2analyzer.model.SensorRequestVO;
 import com.analyzer.ms.co2analyzer.repository.SensorMeasurementRepository;
 import com.analyzer.ms.co2analyzer.utility.SensorStatusMeasurementUtil;
 
@@ -14,22 +20,55 @@ public class SensorCollectServiceImpl implements SensorCollectService {
 	@Autowired
 	private SensorMeasurementRepository measurementRepo;
 	
+	@Autowired
+	private SensorCache sensorCache;
+	
 	@Override
 	public void collectSensor(SensorRequest sensorRequest,String uuid) {
-		saveSensor(prepareSensorMeasurementBody(sensorRequest,uuid));
+		validateRequest(sensorRequest,uuid);
+		SensorRequestVO requestVO = mapToSensorVo(sensorRequest,uuid);
+		
+		//Check if sensor measurement entry already there for same UUID, ignore
+		if(sensorCache.find(uuid) == null) {
+			saveSensor(prepareSensorMeasurementBody(requestVO));
+			addToCache(requestVO);
+		}
+		
+	}
+	
+	private void validateRequest(SensorRequest sensorRequest, String uuid) {
+		if(StringUtils.isEmpty(uuid)) {
+			throw new Co2AnalyzerException("Invalid UUID");
+		}
+		
+		if(Objects.isNull(sensorRequest.getCo2())) {
+			throw new Co2AnalyzerException("Invalid co2");
+		}
+		
+		if(Objects.isNull(sensorRequest.getTime())) {
+			throw new Co2AnalyzerException("Invalid time");
+		}
+		
+	}
+
+	private SensorMeasurement prepareSensorMeasurementBody(SensorRequestVO requestVO) {
+		SensorMeasurement measurement = new SensorMeasurement();
+		
+		//Set status based on co2 level
+		measurement.setStatus(SensorStatusMeasurementUtil.measureStatusByCo2(requestVO.getCo2()).name());
+		measurement.setTime(requestVO.getTime());
+		measurement.setCo2(requestVO.getCo2());
+		measurement.setUuid(requestVO.getUuid());
+		return measurement;
+	}
+	
+	private void addToCache(SensorRequestVO requestVO) {
+		sensorCache.save(requestVO);
 		
 	}
 	private void saveSensor(SensorMeasurement sensorMeasurement) {
 		measurementRepo.save(sensorMeasurement);
 		
-	}
-	private SensorMeasurement prepareSensorMeasurementBody(SensorRequest sensorRequest, String uuid) {
-		SensorMeasurement measurement = new SensorMeasurement();
-		measurement.setStatus(SensorStatusMeasurementUtil.measureStatusByCo2(sensorRequest.getCo2()).name());
-		measurement.setTime(sensorRequest.getTime());
-		measurement.setCo2(sensorRequest.getCo2());
-		measurement.setUuid(uuid);
-		return measurement;
 	}
 	
 
