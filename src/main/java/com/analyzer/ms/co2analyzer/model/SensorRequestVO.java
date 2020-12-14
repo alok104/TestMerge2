@@ -11,6 +11,7 @@ public class SensorRequestVO  implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String co2;
+	private String uuid;
+	private Integer co2;
 	private Date time;
 }

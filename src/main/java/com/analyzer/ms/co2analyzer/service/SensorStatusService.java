@@ -1,5 +1,7 @@
 package com.analyzer.ms.co2analyzer.service;
 
+import com.analyzer.ms.co2analyzer.model.StatusResposeVO;
+
 public interface SensorStatusService {
-	public String getSensorStatus(String uuid);
+	public StatusResposeVO getSensorStatus(String uuid);
 }

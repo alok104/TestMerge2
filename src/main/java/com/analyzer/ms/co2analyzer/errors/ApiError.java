@@ -6,9 +6,11 @@ import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class ApiError {
 
 	private HttpStatus status;
@@ -17,7 +19,7 @@ public class ApiError {
 	private String message;
 	private String debugMessage;
 
-	private ApiError() {
+	public ApiError() {
 		timestamp = LocalDateTime.now();
 	}
 
