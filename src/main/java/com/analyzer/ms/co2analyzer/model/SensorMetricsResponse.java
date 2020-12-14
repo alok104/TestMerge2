@@ -10,6 +10,6 @@ public class SensorMetricsResponse implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Integer maxLast30Days;
-	private Integer avgLast30Days;
+	private Double avgLast30Days;
 
 }
