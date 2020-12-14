@@ -1,5 +1,6 @@
 package com.analyzer.ms.co2analyzer.service;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,7 @@ public class SensorCollectServiceImpl implements SensorCollectService {
 		measurement.setTime(requestVO.getTime());
 		measurement.setCo2(requestVO.getCo2());
 		measurement.setUuid(requestVO.getUuid());
+		measurement.setCreationDate(LocalDate.now());
 		return measurement;
 	}
 	

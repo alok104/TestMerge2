@@ -1,5 +1,6 @@
 package com.analyzer.ms.co2analyzer.helper;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Random;
 
@@ -9,7 +10,7 @@ import com.analyzer.ms.co2analyzer.utility.SensorStatusMeasurementUtil;
 
 public class SensorDTOFactory {
 	public SensorMeasurement sensorMeasurementEntity(String uuid, Integer co2) {
-		return new SensorMeasurement(uuid, co2, new Date(), SensorStatusMeasurementUtil.measureStatusByCo2(co2).name());
+		return new SensorMeasurement(uuid, co2, new Date(), SensorStatusMeasurementUtil.measureStatusByCo2(co2).name(),LocalDate.now());
 	}
 	
 	public SensorRequest sensorRequest() {

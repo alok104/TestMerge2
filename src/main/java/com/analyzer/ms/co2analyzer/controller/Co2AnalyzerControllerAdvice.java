@@ -22,7 +22,7 @@ public class Co2AnalyzerControllerAdvice {
 	public ResponseEntity<?> handleException(Exception ex) {
 		ApiError apiError = new ApiError();
 		apiError.setMessage(ex.getMessage());
-		apiError.setStatus(HttpStatus.BAD_REQUEST);
-		return new ResponseEntity<>(apiError,HttpStatus.BAD_REQUEST);
+		apiError.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(apiError,HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
