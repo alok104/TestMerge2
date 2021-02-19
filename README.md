@@ -1,6 +1,6 @@
 # simplesearch
 
-This project is used to search words in a directory
+This project is used to search words in all files under a directory
 
 # Steps
 1. Checkout the files
