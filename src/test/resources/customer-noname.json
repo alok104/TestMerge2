@@ -1,0 +1,12 @@
+{
+    "dateOfBirth" : "1614426199",
+    "identity" : {
+        "type": "PASSPORT",
+        "number": "243543"
+    },
+    "address": {
+        "street" : "al mankhool",
+        "district" : "dubai",
+        "country": "UAE"
+    }
+}
