@@ -24,7 +24,7 @@ import com.bank.customers.validator.CustomerValidator;
 @RestController
 @RequestMapping(value = Constant.CUSTOMER_URI)
 public class CustomerController {
-	
+
 	@Autowired
 	private CustomerService customerService;
 

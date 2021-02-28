@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.bank.customers.encryption.AesEncryption;
 import com.bank.customers.entity.Customer;
 import com.bank.customers.enums.IndentityType;
 import com.bank.customers.model.Address;
@@ -53,7 +54,7 @@ public class DtoFactory {
 		List<CustomerVO> customerList = new ArrayList<>();
 		for(int i = 1000001; i < 1000011;i++) {
 			CustomerVO customer = new CustomerVO();
-			customer.setCustomerId(String.valueOf(i));
+			customer.setCustomerId(AesEncryption.encrypt(String.valueOf(i), "secret"));
 			customer.setName("abcd"+i);
 			customer.setDateOfBirth(1643324L);
 			customerList.add(customer);

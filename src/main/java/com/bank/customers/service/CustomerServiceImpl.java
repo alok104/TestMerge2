@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bank.customers.constants.Constant;
+import com.bank.customers.encryption.AesEncryption;
 import com.bank.customers.entity.Customer;
 import com.bank.customers.exception.CustomersException;
 import com.bank.customers.model.CustomerVO;
@@ -17,6 +19,9 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	@Autowired
 	private CustomerRepository customerRepo;
+	
+	@Value("${aes.secret}")
+	private String secret;
 
 	@Override
 	public List<CustomerVO> getAllCustomerData() {
@@ -29,7 +34,8 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public CustomerVO getCustomerData(String customerId) {
-		Optional<Customer> customer = customerRepo.findById(Integer.valueOf(customerId));
+		String decryptedId = AesEncryption.decrypt(customerId, secret);
+		Optional<Customer> customer = customerRepo.findById(Integer.valueOf(decryptedId));
 		if(customer.isEmpty()) {
 			throw new CustomersException(Constant.ERROR_ID_DOESNT_EXIST);
 		}
@@ -51,7 +57,8 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public void updateCustomer(CustomerVO customerVo, String customerId) {
-		CustomerVO customer = getCustomerData(customerId);
+		String decryptedId = AesEncryption.decrypt(customerId, secret);
+		CustomerVO customer = getCustomerData(decryptedId);
 		if(customer == null) {
 			throw new CustomersException(Constant.ERROR_ID_DOESNT_EXIST);
 		}
@@ -60,7 +67,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public void deleteCustomer(String customerId) {
-		CustomerVO customer = getCustomerData(customerId);
+		String decryptedId = AesEncryption.decrypt(customerId, secret);
+
+		CustomerVO customer = getCustomerData(decryptedId);
 		if(customer == null) {
 			throw new CustomersException(Constant.ERROR_ID_DOESNT_EXIST);
 		}

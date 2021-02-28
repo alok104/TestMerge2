@@ -19,7 +19,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.bank.customers.exception.CustomersException;
 import com.bank.customers.model.CustomerVO;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
@@ -47,8 +46,7 @@ public class CustomerValidatorTest {
 	
 	@Test
 	public void testValidateCustomerRequest() throws IOException, URISyntaxException  {
-		try {
-		String json = Files.lines(Paths.get(loader.getResource("customer-noname.json").toURI()))
+		String json = Files.lines(Paths.get(loader.getResource("customer.json").toURI()))
                 .parallel()
                 .collect(Collectors.joining());	
 		CustomerVO customerVO  =  objectMapper.readValue(json, CustomerVO.class);
@@ -58,26 +56,96 @@ public class CustomerValidatorTest {
 		});
 
 		assertThat(exception == null);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
-	/*
-	 * @Test public static void testVadlidateIdentity(Identity identity) {
-	 * if(Objects.isNull(identity)) { throw new
-	 * CustomersException("Identity is mandatory"); }
-	 * 
-	 * if(Strings.isBlank(identity.getNumber())) { throw new
-	 * CustomersException("Identity number is mandatory"); } }
-	 * 
-	 * @Test private static void validateAddress(Address adress) {
-	 * if(Objects.isNull(adress)) { throw new
-	 * CustomersException("address field is mandatory"); }
-	 * if(Strings.isBlank(adress.getCountry())) { throw new
-	 * CustomersException("countryCode field is mandatory"); }
-	 * 
-	 * }
-	 */
+	@Test
+	public void testValidateCustomerInvalidNameRequest() throws IOException, URISyntaxException  {
+		String json = Files.lines(Paths.get(loader.getResource("customer-noname.json").toURI()))
+                .parallel()
+                .collect(Collectors.joining());	
+		CustomerVO customerVO  =  objectMapper.readValue(json, CustomerVO.class);
+		
+		Exception exception = assertThrows(CustomersException.class, () -> {
+			CustomerValidator.validateCustomerRequest(customerVO);
+		});
+
+		assertThat(exception != null);
+		assertThat("customerName is mandatory".equals(exception.getMessage()));
+	}
+	
+	@Test
+	public void testValidateCustomerInvalidDateRequest() throws IOException, URISyntaxException  {
+		String json = Files.lines(Paths.get(loader.getResource("customer-nodob.json").toURI()))
+                .parallel()
+                .collect(Collectors.joining());	
+		CustomerVO customerVO  =  objectMapper.readValue(json, CustomerVO.class);
+		
+		Exception exception = assertThrows(CustomersException.class, () -> {
+			CustomerValidator.validateCustomerRequest(customerVO);
+		});
+
+		assertThat(exception != null);
+		assertThat("dateOfBirth is mandatory".equals(exception.getMessage()));
+	}
+	
+	@Test
+	public void testValidateCustomerInvalidIdentityRequest() throws IOException, URISyntaxException  {
+		String json = Files.lines(Paths.get(loader.getResource("customer-noidentity.json").toURI()))
+                .parallel()
+                .collect(Collectors.joining());	
+		CustomerVO customerVO  =  objectMapper.readValue(json, CustomerVO.class);
+		
+		Exception exception = assertThrows(CustomersException.class, () -> {
+			CustomerValidator.validateCustomerRequest(customerVO);
+		});
+
+		assertThat(exception != null);
+		assertThat("Identity is mandatory".equals(exception.getMessage()));
+	}
+	
+	@Test
+	public void testValidateCustomerInvalidIdentityNameRequest() throws IOException, URISyntaxException  {
+		String json = Files.lines(Paths.get(loader.getResource("customer-noidentityName.json").toURI()))
+                .parallel()
+                .collect(Collectors.joining());	
+		CustomerVO customerVO  =  objectMapper.readValue(json, CustomerVO.class);
+		
+		Exception exception = assertThrows(CustomersException.class, () -> {
+			CustomerValidator.validateCustomerRequest(customerVO);
+		});
+
+		assertThat(exception != null);
+		assertThat("Identity number is mandatory".equals(exception.getMessage()));
+	}
+	
+	@Test
+	public void testValidateCustomerInvalidAddressRequest() throws IOException, URISyntaxException  {
+		String json = Files.lines(Paths.get(loader.getResource("customer-noaddress.json").toURI()))
+                .parallel()
+                .collect(Collectors.joining());	
+		CustomerVO customerVO  =  objectMapper.readValue(json, CustomerVO.class);
+		
+		Exception exception = assertThrows(CustomersException.class, () -> {
+			CustomerValidator.validateCustomerRequest(customerVO);
+		});
+
+		assertThat(exception != null);
+		assertThat("address field is mandatory".equals(exception.getMessage()));
+	}
+	
+	@Test
+	public void testValidateCustomerInvalidCountryRequest() throws IOException, URISyntaxException  {
+		String json = Files.lines(Paths.get(loader.getResource("customer-noCountry.json").toURI()))
+                .parallel()
+                .collect(Collectors.joining());	
+		CustomerVO customerVO  =  objectMapper.readValue(json, CustomerVO.class);
+		
+		Exception exception = assertThrows(CustomersException.class, () -> {
+			CustomerValidator.validateCustomerRequest(customerVO);
+		});
+
+		assertThat(exception != null);
+		assertThat("countryCode field is mandatory".equals(exception.getMessage()));
+	}
+
 }

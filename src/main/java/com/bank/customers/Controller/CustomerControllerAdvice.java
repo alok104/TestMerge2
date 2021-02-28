@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.bank.customers.constants.Constant;
 import com.bank.customers.errors.ApiError;
+import com.bank.customers.exception.AesException;
 import com.bank.customers.exception.CustomersException;
 
 @ControllerAdvice
@@ -21,6 +22,14 @@ public class CustomerControllerAdvice {
 	
 	@ExceptionHandler({ Exception.class })
 	public ResponseEntity<?> handleException(Exception ex) {
+		ApiError apiError = new ApiError();
+		apiError.setMessage(Constant.ERROR_MESSAGE);
+		apiError.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(apiError,HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler({ AesException.class })
+	public ResponseEntity<?> handleAESException(Exception ex) {
 		ApiError apiError = new ApiError();
 		apiError.setMessage(Constant.ERROR_MESSAGE);
 		apiError.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
