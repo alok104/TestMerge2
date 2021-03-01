@@ -10,9 +10,10 @@ import static org.mockito.ArgumentMatchers.any;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -61,8 +62,18 @@ public class CustomerServiceTest {
 	
 	@SuppressWarnings("static-access")
 	@Test
+	public void testAddFirstCustomer() {
+		when(customerRepository.save(any(Customer.class))).thenReturn(DtoFactory.getCustomer());
+		when(customerRepository.findTopByOrderByCustomerIdDesc()).thenReturn(DtoFactory.getOptionalEmptyCustomer());
+		String uuid = customerService.addCustomer(DtoFactory.getCustomerVO());
+		assertThat(Strings.isBlank(uuid));
+		assertThat("1000001".equals(uuid));
+	}
+	
+	@SuppressWarnings("static-access")
+	@Test
 	public void testOkGetCustomer() {
-		when(customerRepository.findById(1000001)).thenReturn(DtoFactory.getOptionalCustomer());
+		when(customerRepository.findById(any(Integer.class))).thenReturn(DtoFactory.getOptionalCustomer());
 		CustomerVO customerVo = customerService.getCustomerData(AesEncryption.encrypt("1000001", "secret"));
 		assertThat(customerVo != null);
 		assertThat("1000001".equals(customerVo.getCustomerId()));
@@ -80,9 +91,8 @@ public class CustomerServiceTest {
 	}
 	
 	@SuppressWarnings("static-access")
-	@Test
 	public void testDeleteCustomer() {
-		when(customerRepository.findById(1000001)).thenReturn(DtoFactory.getOptionalCustomer());
+		when(customerRepository.findById(any(Integer.class))).thenReturn(DtoFactory.getOptionalCustomer());
 		doNothing().when(customerRepository).deleteById(1000001);;
 		Exception exception = assertThrows(CustomersException.class, () -> {
 			customerService.deleteCustomer(AesEncryption.encrypt("1000001", "secret"));
@@ -93,20 +103,14 @@ public class CustomerServiceTest {
 	}
 	
 	@SuppressWarnings("static-access")
-	@Test
-	public void testUpdateCustomer() {
-		when(customerRepository.findById(1000001)).thenReturn(DtoFactory.getOptionalCustomer());
+	@Test(expected = CustomersException.class)
+	public void testFailureUpdateCustomer() {
+		when(customerRepository.findById(any(Integer.class))).thenReturn(DtoFactory.getOptionalEmptyCustomer());
 		when(customerRepository.save(DtoFactory.getCustomer())).thenReturn(DtoFactory.getCustomer());
 
-		Exception exception = assertThrows(CustomersException.class, () -> {
-			customerService.updateCustomer(DtoFactory.getCustomerVO(),AesEncryption.encrypt("1000001", "secret"));
-		});
-
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(Constant.ERROR_ID_DOESNT_EXIST));
-		
+		customerService.updateCustomer(DtoFactory.getCustomerVO(),AesEncryption.encrypt("1000005", "secret"));
 	}
+	
 	
 	@Test
 	public void testNoDataFound() {
@@ -118,14 +122,8 @@ public class CustomerServiceTest {
 
 		String actualMessage = exception.getMessage();
 
-		assertTrue(actualMessage.contains(message));
+		assertTrue(actualMessage.equals(message));
 	}
-	
-	/*
-	 * public void updateCustomer(CustomerVO customerVo, String customerId);
-	 * 
-	 * public void deleteCustomer(String customerId);
-	 */
 	
 
 

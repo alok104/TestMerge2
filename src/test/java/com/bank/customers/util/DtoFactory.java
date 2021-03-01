@@ -14,6 +14,7 @@ import com.bank.customers.model.Identity;
 public class DtoFactory {
 	public static CustomerVO getCustomerVO() {
 		CustomerVO customerVO = new CustomerVO();
+		customerVO.setCustomerId("1000001");
 		customerVO.setName("abcd");
 		customerVO.setDateOfBirth(1643324L);
 		Address address = new Address();
@@ -61,5 +62,9 @@ public class DtoFactory {
 		}
 		
 		return customerList;
+	}
+
+	public static Optional<Customer> getOptionalEmptyCustomer() {
+		return Optional.empty();
 	}
 }

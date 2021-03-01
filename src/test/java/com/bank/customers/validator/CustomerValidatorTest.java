@@ -45,20 +45,6 @@ public class CustomerValidatorTest {
 	}
 	
 	@Test
-	public void testValidateCustomerRequest() throws IOException, URISyntaxException  {
-		String json = Files.lines(Paths.get(loader.getResource("customer.json").toURI()))
-                .parallel()
-                .collect(Collectors.joining());	
-		CustomerVO customerVO  =  objectMapper.readValue(json, CustomerVO.class);
-		
-		Exception exception = assertThrows(CustomersException.class, () -> {
-			CustomerValidator.validateCustomerRequest(customerVO);
-		});
-
-		assertThat(exception == null);
-	}
-	
-	@Test
 	public void testValidateCustomerInvalidNameRequest() throws IOException, URISyntaxException  {
 		String json = Files.lines(Paths.get(loader.getResource("customer-noname.json").toURI()))
                 .parallel()

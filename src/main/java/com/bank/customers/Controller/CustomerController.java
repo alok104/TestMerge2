@@ -35,7 +35,6 @@ public class CustomerController {
 
 	@GetMapping(Constant.CUSTOMER_OPERATION_URI)
 	public CustomerVO getCustomerData(@PathVariable String id) {
-		CustomerValidator.validateCustomerId(id);
 		return customerService.getCustomerData(id);
 	}
 
@@ -50,14 +49,12 @@ public class CustomerController {
 
 	@PutMapping(Constant.CUSTOMER_OPERATION_URI)
 	public ResponseEntity<?> updateCustomerDetails(@RequestBody(required = true) CustomerVO customer,@PathVariable(value = "id") String customerId) {
-		CustomerValidator.validateCustomerId(customerId);
 		customerService.updateCustomer(customer,customerId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@DeleteMapping(Constant.CUSTOMER_OPERATION_URI)
 	public ResponseEntity<?> deleteCustomerDetails(@PathVariable(value = "id") String customerId) {
-		CustomerValidator.validateCustomerId(customerId);
 		customerService.deleteCustomer(customerId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
