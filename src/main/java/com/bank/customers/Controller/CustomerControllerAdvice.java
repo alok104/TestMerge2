@@ -20,13 +20,6 @@ public class CustomerControllerAdvice {
 		return new ResponseEntity<>(apiError,HttpStatus.BAD_REQUEST);
 	}
 	
-	@ExceptionHandler({ Exception.class })
-	public ResponseEntity<?> handleException(Exception ex) {
-		ApiError apiError = new ApiError();
-		apiError.setMessage(Constant.ERROR_MESSAGE);
-		apiError.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-		return new ResponseEntity<>(apiError,HttpStatus.INTERNAL_SERVER_ERROR);
-	}
 	
 	@ExceptionHandler({ AesException.class })
 	public ResponseEntity<?> handleAESException(Exception ex) {

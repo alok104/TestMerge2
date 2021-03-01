@@ -46,7 +46,7 @@ public class AesEncryption {
             setKey(secret);
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
+            return Base64.getUrlEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
         } catch (Exception e) 
         {
         	logger.error("Error while encrypting: {},{}", strToEncrypt,e.getMessage());
@@ -61,7 +61,7 @@ public class AesEncryption {
             setKey(secret);
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
+            return new String(cipher.doFinal(Base64.getUrlDecoder().decode(strToDecrypt)));
         } catch (Exception e) 
         {
         	logger.error("Error while decrypting: {},{}", strToDecrypt,e.getMessage());
