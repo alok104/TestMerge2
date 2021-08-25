@@ -1,0 +1,9 @@
+{
+   	"name" : "ajkhh",
+    "dateOfBirth" : "1614426199",
+    "address": {
+        "street" : "al mankhool",
+        "district" : "dubai",
+        "country": "UAE"
+    }
+}
